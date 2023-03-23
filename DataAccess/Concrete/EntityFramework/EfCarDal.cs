@@ -2,14 +2,16 @@
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace DataAccess.Concrete.EntityFramework
 {
     public class EfCarDal : EfEntityRepositoryBase<Car, RentACarContext>, ICarDal
     {
-        public List<CarDetailDto> GetCarDetails()
+        public List<CarDetailDto> GetCarDetails(Expression<Func<CarDetailDto, bool>>? filter = null)
         {
             using (RentACarContext context = new RentACarContext())
             {
@@ -21,13 +23,17 @@ namespace DataAccess.Concrete.EntityFramework
 
                              select new CarDetailDto
                              {
+                                 CarId = c.Id,
+                                 BrandId = b.Id,
+                                 ColorId = co.Id,
                                  CarName = c.Description,
                                  BrandName = b.Name,
                                  ColorName = co.Name,
+                                 ModelYear = c.ModelYear,
                                  DailyPrice = c.DailyPrice
                              };
 
-                return result.ToList();
+                return filter != null ? result.Where(filter).ToList() : result.ToList();
             }
         }
     }
