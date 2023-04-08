@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -19,9 +20,11 @@ namespace Business.Concrete
 
         public IResult Add(Rental rental)
         {
-            if (rental.ReturnDate == null)
+            var result = BusinessRules.Run(CheckInCarRental(rental));
+
+            if (result != null)
             {
-                return new ErrorResult(Messages.ReturnDateNull);
+                return result;
             }
 
             _rentalDal.Add(rental);
@@ -31,6 +34,18 @@ namespace Business.Concrete
         public IDataResult<List<RentalsDetailDto>> GetRentalDetail()
         {
             return new SuccessDataResult<List<RentalsDetailDto>>(_rentalDal.GetRentalDetail());
+        }
+
+        private IResult CheckInCarRental(Rental rental)
+        {
+            var result = _rentalDal.Get(r => r.CarId == rental.CarId && r.ReturnDate == null);
+
+            if (result != null)
+            {
+                return new ErrorResult(Messages.ReturnDateNull);
+            }
+
+            return new SuccessResult();
         }
     }
 }

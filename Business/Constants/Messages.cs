@@ -31,5 +31,7 @@
         public static string UserRegistered = "Kullanıcı başarıyla oluşturuldu.";
         public static string AccessTokenCreated = "Access Token başarıyla oluşturuldu.";
         public static string AuthorizationDenied = "Yetkilendirme reddedildi.";
+        public static string PayIsSuccessfull = "Ödeme başarılı!";
+        public static string CardInformationIsIncorrect = "Kredi kartı bilgilerini hatalı girdiniz.";
     }
 }
