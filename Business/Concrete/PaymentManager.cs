@@ -29,9 +29,10 @@ namespace Business.Concrete
             var result = _paymentDal.Get(p =>
                 p.FullName == payment.FullName &&
                 p.CardNumber == payment.CardNumber &&
+                p.Cvv == payment.Cvv &&
                 p.Month == payment.Month &&
-                p.Year == payment.Year &&
-                p.CVV == payment.CVV);
+                p.Year == payment.Year
+                );
 
             if (result != null)
             {
