@@ -1,10 +1,10 @@
 ﻿using Business.Abstract;
 using Business.Constants;
-using Business.ValidationRules.FluentValidation;
-using Core.Aspect.Autofac.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using System;
 using System.Collections.Generic;
 
 namespace Business.Concrete
@@ -12,10 +12,12 @@ namespace Business.Concrete
     public class PaymentManager : IPaymentService
     {
         private IPaymentDal _paymentDal;
+        private ICreditCardService _creditCardService;
 
-        public PaymentManager(IPaymentDal paymentDal)
+        public PaymentManager(IPaymentDal paymentDal, ICreditCardService creditCardService)
         {
             _paymentDal = paymentDal;
+            _creditCardService = creditCardService;
         }
 
         public IDataResult<List<Payment>> GetAll()
@@ -23,23 +25,30 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Payment>>(_paymentDal.GetAll());
         }
 
-        [ValidationAspect(typeof(PaymentValidator))]
-        public IResult Pay(Payment payment)
+        public IResult Pay(Payment payment, CreditCard creditCard)
         {
-            var result = _paymentDal.Get(p =>
-                p.FullName == payment.FullName &&
-                p.CardNumber == payment.CardNumber &&
-                p.Cvv == payment.Cvv &&
-                p.Month == payment.Month &&
-                p.Year == payment.Year
-                );
+            var result = BusinessRules.Run(ValidateCard(creditCard));
 
             if (result != null)
             {
-                return new SuccessResult(Messages.PayIsSuccessfull);
+                payment.PaymentDate = DateTime.Now;
+                return result;
             }
 
-            return new ErrorResult(Messages.CardInformationIsIncorrect);
+            payment.PaymentDate = DateTime.Now;
+            _paymentDal.Add(payment);
+            return new SuccessResult(result.Message);
+
+        }
+
+        private IResult ValidateCard(CreditCard creditCard)
+        {
+            if (creditCard.CardNumber.Length > 16)
+            {
+                return new ErrorResult(Messages.CreditCardNumberInvalid);
+            }
+
+            return new SuccessResult(Messages.PaymentSuccess);
         }
     }
 }

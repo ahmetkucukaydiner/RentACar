@@ -33,5 +33,10 @@
         public static string AuthorizationDenied = "Yetkilendirme reddedildi.";
         public static string PayIsSuccessfull = "Ödeme başarılı!";
         public static string CardInformationIsIncorrect = "Kredi kartı bilgilerini hatalı girdiniz.";
+        public static string CreditCardAdded = "Kredi kartı eklendi.";
+        public static string CreditCardUpdated = "Kredi kartı bilgileri güncellendi.";
+        public static string CreditCardDeleted = "Kredi kartı bilgileri silindi.";
+        public static string CreditCardNumberInvalid = "Kredi kartı numarası geçersiz.";
+        public static string PaymentSuccess = "Ödeme işlemi başarılı!";
     }
 }
