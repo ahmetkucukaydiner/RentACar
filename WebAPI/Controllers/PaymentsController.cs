@@ -11,6 +11,7 @@ namespace WebAPI.Controllers
         private IPaymentService _paymentService;
 
 
+
         public PaymentsController(IPaymentService paymentService)
         {
             _paymentService = paymentService;
@@ -30,9 +31,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("pay")]
-        public IActionResult Pay(Payment payment)
+        public IActionResult Pay(CreditCard creditCard)
         {
-            var result = _paymentService.Pay(payment);
+            var result = _paymentService.Pay(creditCard);
 
             if (result.Success)
             {

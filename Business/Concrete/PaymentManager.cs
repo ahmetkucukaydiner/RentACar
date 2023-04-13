@@ -4,7 +4,6 @@ using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
-using System;
 using System.Collections.Generic;
 
 namespace Business.Concrete
@@ -25,19 +24,16 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Payment>>(_paymentDal.GetAll());
         }
 
-        public IResult Pay(Payment payment, CreditCard creditCard)
+        public IResult Pay(CreditCard creditCard)
         {
             var result = BusinessRules.Run(ValidateCard(creditCard));
 
             if (result != null)
             {
-                payment.PaymentDate = DateTime.Now;
-                return result;
+                return new ErrorResult(Messages.PaymentDenied);
             }
 
-            payment.PaymentDate = DateTime.Now;
-            _paymentDal.Add(payment);
-            return new SuccessResult(result.Message);
+            return new SuccessResult(Messages.PaymentSuccess);
 
         }
 

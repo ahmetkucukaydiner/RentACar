@@ -38,5 +38,6 @@
         public static string CreditCardDeleted = "Kredi kartı bilgileri silindi.";
         public static string CreditCardNumberInvalid = "Kredi kartı numarası geçersiz.";
         public static string PaymentSuccess = "Ödeme işlemi başarılı!";
+        public static string PaymentDenied = "Ödeme reddedildi.";
     }
 }
