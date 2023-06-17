@@ -89,9 +89,15 @@ namespace Business.Concrete
 
         private IDataResult<List<CarImage>> GetDefaultImage(int carId)
         {
-            List<CarImage> carImage = new List<CarImage>();
-            carImage.Add(new CarImage { CarId = carId, Date = DateTime.Now, ImagePath = "DefaultImage.jpg" });
-            return new SuccessDataResult<List<CarImage>>(carImage);
+            List<CarImage> carImages = _carImageDal.GetAll(c => c.CarId == carId);
+            if(carImages.Count == 0 )
+            {
+                CarImage defaultImage = new CarImage { CarId = carId, ImagePath = "DefaultImage.jpg", Date = DateTime.Now };
+                carImages.Add(defaultImage);
+                _carImageDal.Add(defaultImage);
+            }
+
+            return new SuccessDataResult<List<CarImage>>(carImages);
         }
 
         private IResult CheckCarImage(int carId)

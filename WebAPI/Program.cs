@@ -3,6 +3,7 @@ using Autofac.Extensions.DependencyInjection;
 using Business.DependencyResolvers.Autofac;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 
 namespace WebAPI
 {
@@ -10,6 +11,12 @@ namespace WebAPI
     {
         public static void Main(string[] args)
         {
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Seq("http://localhost:5341/")
+                .MinimumLevel.Information()
+                .Enrich.WithProperty("AppName", "RentACar")
+                .Enrich.WithProperty("Enviroment" , "Development")
+                .CreateLogger();
             CreateHostBuilder(args).Build().Run();
         }
 
@@ -23,6 +30,7 @@ namespace WebAPI
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
+                })
+                .UseSerilog();
     }
 }
